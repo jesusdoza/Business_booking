@@ -58,7 +58,6 @@ const useDrift = () => {
       }
     })();
     drift.SNIPPET_VERSION = "0.3.1";
-    // drift.load("k9sf2yvdayey");
     drift.load(driftKey);
 
     // Cleanup function to remove script if component unmounts
