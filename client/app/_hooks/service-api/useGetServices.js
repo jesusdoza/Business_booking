@@ -5,42 +5,36 @@ export default function useGetServices() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
 
-    setError(null);
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
+      const res = await fetchServiceData();
 
-        const res = await fetchServiceData(controller.signal);
+      console.log("res", res);
 
-        setError(null);
-        setData(res.data);
-      } catch (error) {
-        console.log("failed to fetch services", error);
-        setData([]);
-        setError({ message: "Failed to fetch services", error });
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      setError(null);
+      setData(res.data);
+    } catch (error) {
+      console.log("failed to fetch services", error);
+      setData([]);
+      setError({ message: "Failed to fetch services", error });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchData();
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
-
-  return { data, isLoading, error };
+  return { data, isLoading, error, fetchData };
 }
 
-async function fetchServiceData(signal) {
-  const response = await fetch(`/api/services`, { signal });
+async function fetchServiceData() {
+  const response = await fetch(`/api/services`);
+
+  console.log("response", response);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
   const data = await response.json();
+
   return data;
 }
