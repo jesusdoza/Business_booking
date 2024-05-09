@@ -16,7 +16,11 @@ export default function AppointmentPage() {
   const [startDate, setStartDate] = useState(new Date().toLocaleDateString());
   const dateWithNoHyphens = formatDate(startDate);
 
-  const { data: serviceList, error: serviceListError } = useGetServices();
+  const {
+    data: serviceList,
+    error: serviceListError,
+    fetchData: fetchServices,
+  } = useGetServices();
   const { data: timeSlotsList, error: timeSlotsListError } =
     useGetDayTimeSlots(dateWithNoHyphens);
   const [service, setService] = useState("");
@@ -38,12 +42,9 @@ export default function AppointmentPage() {
     isLoading: appointmentPostLoading,
   } = usePostAppointment();
 
-  // const timeSlotData = useGetDayTimeSlots(startDate);
-
-  // useEffect(() => {
-  //   // console.log("timeslots", timeSlotData.data);
-  //   setTimeSlotsList(timeSlotData.data);
-  // }, [timeSlotData.data]);
+  useEffect(() => {
+    fetchServices();
+  }, []);
 
   const serviceInputHandler = (e) => {
     setService(e.target.value);

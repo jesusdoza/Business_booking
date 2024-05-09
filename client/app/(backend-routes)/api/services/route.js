@@ -4,14 +4,15 @@ const LOC = "/api/services";
 export const dynamic = "force-dynamic"; // have next js NOT cache this request
 export async function GET(request, { params }) {
   try {
-    const data = await getServicesList();
-    const body = JSON.stringify({ data });
+    const response = await getServicesList();
+
+    const body = JSON.stringify({ data: response });
+
     return new Response(body, {
       status: 200,
     });
   } catch (error) {
     const body = JSON.stringify({
-      data: [],
       message: "failed to get services list",
       error: error?.message,
     });
@@ -24,6 +25,10 @@ export async function GET(request, { params }) {
 
 async function getServicesList() {
   const response = await fetch(`${API_URL}/services`);
+
+  if (!response.ok) {
+    throw Error("failed to fetch services from api");
+  }
   const data = await response.json();
   return data;
 }
