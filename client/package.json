@@ -21,6 +21,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/react": "18.3.2",
     "autoprefixer": "^10.0.1",
     "daisyui": "^4.7.3",
     "eslint": "^8",
