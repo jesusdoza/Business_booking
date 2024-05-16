@@ -2,6 +2,12 @@ import { NextRequest } from "next/server";
 
 const API_URL = process.env.API_URL;
 
+type servicesData = {
+  id: string;
+  name: string;
+  partsNeeded: string[];
+};
+
 const LOC = "/api/services";
 
 export const dynamic = "force-dynamic"; // have next js NOT cache this request
@@ -25,9 +31,14 @@ export async function GET(request: NextRequest) {
   }
 }
 
-async function getServicesList() {
-  const response = await fetch(`${API_URL}/services`);
-  const data = await response.json();
+async function getServicesList(): Promise<servicesData> {
+  // const response = await fetch(`${API_URL}/services`);
+  // const data: servicesData = await response.json();
+  const data: servicesData = {
+    id: "1",
+    name: "part one",
+    partsNeeded: ["part id 1", "part id 2"],
+  };
   return data;
 }
 
