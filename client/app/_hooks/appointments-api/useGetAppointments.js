@@ -5,43 +5,34 @@ export default function useGetAppointments(date) {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const controller = new AbortController();
-
+  const fetchData = async () => {
     setError(null);
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-        const res = await fetchAppointmentsData({
-          signal: controller.signal,
-          date,
-        });
-        setError(null);
+      const res = await fetchAppointmentsData({
+        signal: controller.signal,
+        date,
+      });
+      setError(null);
+      setData(res.data);
+      if (res.data?.status === 500) {
+        setError(res.data.error);
+        setData(null);
+      } else {
         setData(res.data);
-        if (res.data?.status === 500) {
-          setError(res.data.error);
-          setData(null);
-        } else {
-          setData(res.data);
-          setError(null);
-        }
-        console.log("🚀 ~ fetchData ~ res.data:", res.data);
-      } catch (error) {
-        console.log("failed to fetch appointment Data", error);
-        setData([]);
-        setError({ message: "failed to fetch appointment Data", error });
-      } finally {
-        setIsLoading(false);
+        setError(null);
       }
-    };
+      console.log("🚀 ~ fetchData ~ res.data:", res.data);
+    } catch (error) {
+      console.log("failed to fetch appointment Data", error);
+      setData([]);
+      setError({ message: "failed to fetch appointment Data", error });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchData;
-
-    return () => {
-      controller.abort();
-    };
-  }, [date]);
   return { data, error, isLoading, fetchData };
 }
 
