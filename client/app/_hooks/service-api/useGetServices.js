@@ -11,8 +11,6 @@ export default function useGetServices() {
 
       const res = await fetchServiceData();
 
-      console.log("res", res);
-
       setError(null);
       setData(res.data);
     } catch (error) {
@@ -30,7 +28,6 @@ export default function useGetServices() {
 async function fetchServiceData() {
   const response = await fetch(`/api/services`);
 
-  console.log("response", response);
   if (!response.ok) {
     throw new Error("Network response was not ok");
   }
