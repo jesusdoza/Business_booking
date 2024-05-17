@@ -5,39 +5,27 @@ export default function useGetDayTimeSlots(date) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    setError(null);
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
 
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
+      const res = await fetchTimeSlotData({
+        date,
+      });
 
-        const res = await fetchTimeSlotData({
-          date,
-          signal: controller.signal,
-        });
+      setError(null);
+      setData(res.data);
+    } catch (error) {
+      console.log("failed to fetch timeslots for day", error);
 
-        setError(null);
-        setData(res.data);
-      } catch (error) {
-        console.log("failed to fetch timeslots for day", error);
+      setData([]);
+      setError({ message: "failed to fetch timeslots for day", error });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-        setData([]);
-        setError({ message: "failed to fetch timeslots for day", error });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      controller.abort();
-    };
-  }, [date]);
-
-  return { data, isLoading, error };
+  return { data, isLoading, error, fetchData };
 }
 
 async function fetchTimeSlotData({ date, signal }) {
@@ -46,7 +34,6 @@ async function fetchTimeSlotData({ date, signal }) {
       "Content-Type": "application/json",
     },
     method: "GET",
-    signal,
   });
 
   if (!response.ok) {

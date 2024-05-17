@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { timeSlots, statesList } from "@/constants";
+import { timeSlots, statesList } from "../../constants";
 import { useRouter } from "next/navigation";
 import useGetDayTimeSlots from "../_hooks/timeslot-api/useGetDayTimeSlots";
 import useGetServices from "../_hooks/service-api/useGetServices";
@@ -21,8 +21,11 @@ export default function AppointmentPage() {
     error: serviceListError,
     fetchData: fetchServices,
   } = useGetServices();
-  const { data: timeSlotsList, error: timeSlotsListError } =
-    useGetDayTimeSlots(dateWithNoHyphens);
+  const {
+    data: timeSlotsList,
+    error: timeSlotsListError,
+    fetchData: getTimeSlots,
+  } = useGetDayTimeSlots(dateWithNoHyphens);
   const [service, setService] = useState("");
   const [appointment, setAppointment] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -44,6 +47,7 @@ export default function AppointmentPage() {
 
   useEffect(() => {
     fetchServices();
+    getTimeSlots();
   }, []);
 
   const serviceInputHandler = (e) => {
@@ -170,7 +174,6 @@ export default function AppointmentPage() {
       const params = new URLSearchParams({
         appointment: JSON.stringify(response),
       });
-      // console.log("response", response);
       router.push(`/appointmentconfirmed?${params}`);
     } catch (error) {
       console.log("error post appointment");
@@ -282,10 +285,11 @@ export default function AppointmentPage() {
           />
           <select
             className="select select-bordered select-lg w-full"
+            defaultValue={"State"}
             onChange={stateInputHandler}>
             <option
-              disabled
-              selected>
+              value={"State"}
+              disabled>
               State
             </option>
             {statesList.map((state) => (

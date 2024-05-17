@@ -31,14 +31,16 @@ export async function GET(request: NextRequest) {
   }
 }
 
-async function getServicesList(): Promise<servicesData> {
-  // const response = await fetch(`${API_URL}/services`);
-  // const data: servicesData = await response.json();
-  const data: servicesData = {
-    id: "1",
-    name: "part one",
-    partsNeeded: ["part id 1", "part id 2"],
-  };
+async function getServicesList(): Promise<servicesData[]> {
+  // const data: servicesData[] = [
+  //   {
+  //     id: "1",
+  //     name: "part one",
+  //     partsNeeded: ["part id 1", "part id 2"],
+  //   },
+  // ];
+  const response = await fetch(`${API_URL}/services`);
+  const data: servicesData[] = await response.json();
   return data;
 }
 
